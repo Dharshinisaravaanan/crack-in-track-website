@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="style4.css"> <!-- Link to CSS file -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <!-- Login ID -->
+            <label for="loginId">Login ID</label>
+            <input type="text" id="loginId" name="loginId" placeholder="Enter your Login ID" required>
+
+            <!-- Password -->
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your Password" required>
+
+            <!-- Submit Button -->
+            <button type="submit" class="login-btn">Login</button>
+
+            <!-- Forgot Password Link -->
+            <a href="#" class="forgot-password">Forgot your password?</a>
+        </form>
+    </div>
+
+    <script>
+        // Define a simple login validation function
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form from submitting normally
+
+            // Fetch the entered login ID and password
+            const loginId = document.getElementById('loginId').value;
+            const password = document.getElementById('password').value;
+
+            // Simple validation (you can replace this with actual authentication logic)
+            const validLoginId = "tranquil";  // Predefined login ID (for example purposes)
+            const validPassword = "1234";  // Predefined password (for example purposes)
+
+            if (loginId === validLoginId && password === validPassword) {
+                // If valid, redirect to the sensor data page
+                window.location.href = "html3.html";
+            } else {
+                alert('Invalid login credentials. Please try again.');
+            }
+        });
+    </script>
+</body>
+</html>
+
+

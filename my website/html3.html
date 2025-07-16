@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="style3.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Data</title>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+</head>
+<body>
+  <div class="content-container">
+    <!-- Sensor Data Heading -->
+    <h1>Sensor Data</h1>
+
+    <!-- Table to display sensor data -->
+    <table>
+      <thead>
+        <tr>
+          <th>Sensor</th>
+          <th>Distance (cm)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Sensor 1</td>
+          <td id="sensor1">N/A</td>
+        </tr>
+        <tr>
+          <td>Sensor 2</td>
+          <td id="sensor2">N/A</td>
+        </tr>
+        <tr>
+          <td>Sensor 3</td>
+          <td id="sensor3">N/A</td>
+        </tr>
+      </tbody>
+    </table>
+    <table>
+
+   
+    <!-- Back Button -->
+    <a href="index.html" class="cta-button">Back</a>
+  </div>
+  
+
+  <script>
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID",
+      measurementId: "YOUR_MEASUREMENT_ID"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    // Reference to your Firebase database
+    const database = firebase.database();
+
+    // Function to fetch and display sensor data
+    function fetchData() {
+      database.ref('sensorData').on('value', (snapshot) => {
+        const data = snapshot.val();
+        updateValues(data);
+      });
+    }
+
+    function updateValues(data) {
+      document.getElementById('sensor1').textContent = data.sensor1_distance || 'N/A';
+      document.getElementById('sensor2').textContent = data.sensor2_distance || 'N/A';
+      document.getElementById('sensor3').textContent = data.sensor3_distance || 'N/A';
+    }
+
+    // Fetch data on page load
+    fetchData();
+  
+
+  </script>
+</body>
+</html>
+
+
+
+
+

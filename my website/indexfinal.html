@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Data Dashboard</title>
+    <link rel="stylesheet" href="styleweb.css"> <!-- Link to your CSS file -->
+</head>
+<body>
+    <div class="container">
+        <h1>Sensor Data Dashboard</h1>
+        <div id="alert" class="alert"></div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Sensor 1 Distance (cm)</th>
+                    <th>Sensor 2 Distance (cm)</th>
+                    <th>Sensor 3 Distance (cm)</th>
+                    <th>Crack Detected</th>
+                </tr>
+            </thead>
+            <tbody id="data-body">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+        <button id="show-graph" class="button">Show Graph</button>
+        <button id="show-map" class="button">Show Map</button>
+        <div id="chart-container" class="chart-container" style="display: none;">
+            <iframe
+                id="chart-iframe"
+                src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTa_biWMU3CjC23p-NVlvvDdDm074ngnsPUSVzdRXPlx6TOI8FRgIRVuBhvJumZcKYNVm38dItWjCUN/pubchart?oid=298430043&amp;format=interactive"
+                width="800"
+                height="600"
+                frameborder="0"
+                allowfullscreen
+            ></iframe>
+        </div>
+        <div id="map-container" class="chart-container" style="display: none;">
+            <iframe
+                id="map-iframe"
+                src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTa_biWMU3CjC23p-NVlvvDdDm074ngnsPUSVzdRXPlx6TOI8FRgIRVuBhvJumZcKYNVm38dItWjCUN/pubchart?oid=2068375218&amp;format=interactive"
+                width="800"
+                height="600"
+                frameborder="0"
+                allowfullscreen
+            ></iframe>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Realtime Database URL
+        const firebaseUrl = 'https://tranquil-c2029-default-rtdb.firebaseio.com/sensorData.json';
+
+        // Function to fetch data from Firebase
+        async function fetchData() {
+            try {
+                const response = await fetch(firebaseUrl);
+                const data = await response.json();
+                updateTable(data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Function to update the table with sensor data
+        function updateTable(data) {
+            const dataBody = document.getElementById('data-body');
+            const alertDiv = document.getElementById('alert');
+
+            dataBody.innerHTML = '';
+
+            // Check if data is available
+            if (data) {
+                // Display data in the table
+                dataBody.innerHTML = `
+                    <tr>
+                        <td>${data.sensor1_distance || 'N/A'}</td>
+                        <td>${data.sensor2_distance || 'N/A'}</td>
+                        <td>${data.sensor3_distance || 'N/A'}</td>
+                        <td>${data.crack_detected ? 'Yes' : 'No'}</td>
+                    </tr>
+                `;
+
+                // Show alert and popup if crack detected
+                if (data.crack_detected) {
+                    alertDiv.textContent = 'Crack Detected!';
+                    alertDiv.style.display = 'block';
+                    alert('Attention: There is a crack detected!');
+                } else {
+                    alertDiv.style.display = 'none';
+                    alert('No crack detected.');
+                }
+            } else {
+                dataBody.innerHTML = '<tr><td colspan="4">No data available</td></tr>';
+            }
+        }
+
+        // Function to show the graph
+        function showGraph() {
+            const chartContainer = document.getElementById('chart-container');
+            chartContainer.style.display = 'block';
+            const mapContainer = document.getElementById('map-container');
+            mapContainer.style.display = 'none';
+        }
+
+        // Function to show the map
+        function showMap() {
+            const mapContainer = document.getElementById('map-container');
+            mapContainer.style.display = 'block';
+            const chartContainer = document.getElementById('chart-container');
+            chartContainer.style.display = 'none';
+        }
+
+        // Event listeners for the buttons
+        document.getElementById('show-graph').addEventListener('click', showGraph);
+        document.getElementById('show-map').addEventListener('click', showMap);
+
+        // Fetch data on page load
+        fetchData();
+    </script>
+</body>
+</html>

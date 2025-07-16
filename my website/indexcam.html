@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Camera Access</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            background: url('camera-red-theme-bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff; /* White text color for contrast */
+        }
+
+        h1 {
+            margin-top: 20px;
+            color: #ff6666; /* Light red color for the header */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Add shadow for better readability */
+        }
+
+        #camera {
+            border: 2px solid #ff3333; /* Red border for the video element */
+            background: #000;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        }
+
+        #capturedImage {
+            border: 2px solid #ff3333; /* Red border for the captured image */
+            margin-top: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        }
+
+        canvas {
+            border: 2px solid #ff3333; /* Red border for the canvas element */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        }
+    </style>
+</head>
+<body>
+    <h1>Phone Camera Feed</h1>
+    
+    <!-- Video element to display phone camera stream -->
+    <video id="camera" autoplay playsinline width="640" height="480"></video>
+    <br>
+    <!-- Canvas element to display the captured image -->
+    <canvas id="snapshot" width="640" height="480" style="display:none;"></canvas>
+    <br>
+    <!-- Image element to show the captured picture -->
+    <img id="capturedImage" alt="Captured Image" width="640" height="480">
+    
+    <script>
+        // Get the video, canvas, and image elements
+        const video = document.getElementById('camera');
+        const canvas = document.getElementById('snapshot');
+        const img = document.getElementById('capturedImage');
+
+        // Function to start the camera stream
+        function startCamera() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    video.srcObject = stream;
+                })
+                .catch(error => {
+                    console.error('Error accessing camera:', error);
+                });
+        }
+
+        // Function to capture a picture from the video stream
+        function capturePicture() {
+            const context = canvas.getContext('2d');
+            // Draw the current frame from the video onto the canvas
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // Convert the canvas image to a data URL and display it
+            img.src = canvas.toDataURL('image/png');
+
+            // Create a link element and trigger the download
+            const link = document.createElement('a');
+            link.href = img.src;
+            link.download = 'captured-image.png'; // Filename for the downloaded image
+            document.body.appendChild(link); // Append link to the body
+            link.click(); // Trigger the download
+            document.body.removeChild(link); // Remove link from the body
+        }
+
+        // Start the camera when the page loads
+        startCamera();
+
+        // Automatically capture and save a picture every 5 seconds (5000 milliseconds)
+        setInterval(capturePicture, 5000);
+    </script>
+</body>
+</html>
